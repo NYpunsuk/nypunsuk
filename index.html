@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ / สมัครสมาชิก - ระบบบริการสุขภาพผู้ต้องขัง</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: auto;
+        }
+
+        .logo-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-box img {
+            max-width: 90px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .logo-box h2 {
+            font-size: 1.2rem;
+            color: #004d33;
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #006644;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: #006644;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #006644;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #004d33;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            color: #006644;
+            border: 1px solid #006644;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e6f2ed;
+        }
+
+        .auth-toggle-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .auth-toggle-link a {
+            color: #006644;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Footer & Credits Styles */
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 30px;
+            line-height: 1.5;
+        }
+
+        .credits-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .fb-logo {
+            width: 20px;
+            height: 20px;
+        }
+
+        .credits-link {
+            color: #1877f2;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .credits-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading Overlay */
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            color: #006644;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- 1. โลโก้ รูปภาพ -->
+        <div class="logo-box">
+            <img src="img/ปันสุข.png" alt="โลโก้สำนักงาน" width="350px" height="350px">
+            <h2>ระบบบริการสุขภาพสำหรับผู้ต้องขัง</h2>
+        </div>
+
+        <!-- ================= 2. ฟอร์มเข้าสู่ระบบ (LOGIN) ================= -->
+        <div id="login-box">
+            <div class="form-title">เข้าสู่ระบบ</div>
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <!-- 2. ช่องกรอก username -->
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="กรอก Username" required>
+                </div>
+                <!-- 3. ช่องกรอก password (***) -->
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="กรอก Password" required>
+                </div>
+                <!-- 4. ปุ่ม เข้าสู่ระบบ/Log in -->
+                <button type="submit" class="btn-primary"><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ / Log in</button>
+            </form>
+
+            <!-- 5. ปุ่ม สมัครสมาชิก/ลงทะเบียน -->
+            <button type="button" class="btn-secondary" onclick="toggleAuthMode('register')">
+                <i class="fa-solid fa-user-plus"></i> สมัครสมาชิก / ลงทะเบียน
+            </button>
+        </div>
+
+        <!-- ================= 3. ฟอร์มสมัครสมาชิก (REGISTER) ================= -->
+        <div id="register-box" style="display: none;">
+            <div class="form-title">ลงทะเบียนสมัครสมาชิก</div>
+            <form id="form-register" onsubmit="handleRegister(event)">
+                <!-- 7.1 คำนำหน้า -->
+                <div class="form-group">
+                    <label>คำนำหน้า</label>
+                    <select id="reg-title" class="form-control" required>
+                        <option value="">-- เลือกคำนำหน้า --</option>
+                        <option value="นาย">นาย</option>
+                        <option value="นาง">นาง</option>
+                        <option value="นางสาว">นางสาว</option>
+                    </select>
+                </div>
+
+                <!-- 7.2 ช่องกรอก "ชื่อ" และ "นามสกุล" -->
+                <div class="grid-2">
+                    <div class="form-group">
+                        <input type="text" id="reg-firstname" class="form-control" placeholder="ชื่อ" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="reg-lastname" class="form-control" placeholder="นามสกุล" required>
+                    </div>
+                </div>
+
+                <!-- 7.3 ช่องกรอก 4 ช่อง -->
+                <div class="grid-2">
+                    <div class="form-group">
+                        <input type="tel" id="reg-phone" class="form-control" placeholder="เบอร์โทรศัพท์" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="reg-email" class="form-control" placeholder="Email" required>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <input type="text" id="reg-position" class="form-control" placeholder="ตำแหน่ง" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="reg-workplace" class="form-control" placeholder="สถานที่ทำงาน" required>
+                    </div>
+                </div>
+
+                <!-- 7.4 ช่องกรอก username และ password -->
+                <div class="grid-2">
+                    <div class="form-group">
+                        <input type="text" id="reg-username" class="form-control" placeholder="username" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="reg-password" class="form-control" placeholder="password (***)" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">ยืนยันลงทะเบียน</button>
+            </form>
+
+            <div class="auth-toggle-link">
+                มีบัญชีอยู่แล้ว? <a href="#" onclick="toggleAuthMode('login')">เข้าสู่ระบบที่นี่</a>
+            </div>
+        </div>
+
+        <div id="loading-spinner" class="loading">
+            <i class="fa-solid fa-spinner fa-spin"></i> กำลังดำเนินการ...
+        </div>
+    </div>
+
+    <!-- 6. ข้อความส่วนท้าย -->
+    <footer>
+        <p>&copy; 2026 กลุ่มงานพัฒนาคุณภาพและรูปแบบบริการ สำนักงานสาธารณสุขจังหวัดนครนายก<br>
+        เลขที่ 90 หมู่ 7 ตำบลเขาพระ อำเภอเมืองนครนายก จังหวัดนครนายก 26000 <br>
+        เบอร์โทรศัพท์ 037-386390 ต่อ 311 | E-mail : Works.wor27@gmail.com</p>
+
+        <div class="credits-container">
+            <a href="https://www.facebook.com/riskcom.noph" target="_blank">
+               
+            </a>
+            <a href="https://www.facebook.com/riskcom.noph" target="_blank" class="credits-link">
+                <i class="fa-brands fa-facebook"></i> สื่อสารความเสี่ยงโรคและภัยสุขภาพ สสจ.นครนายก
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // *** วาง Web App URL จาก Google Apps Script ที่ Deploy เรียบร้อยแล้วตรงนี้ ***
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydoHCXoUFjKiqiodJ3UY5rGFVjdk9Nn9wY3M8XoiWxV7rDi6d90phuAH4mbgtN0g55/exec"; 
+        const HOMEPAGE_URL = "homepage.html"; // ลิงก์ไปยังหน้า Homepage
+
+        // สลับหน้าระหว่าง Login และ Register
+        function toggleAuthMode(mode) {
+            if (mode === 'register') {
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('register-box').style.display = 'block';
+            } else {
+                document.getElementById('register-box').style.display = 'none';
+                document.getElementById('login-box').style.display = 'block';
+            }
+        }
+
+        // 7.5 สมัครสมาชิกส่งข้อมูลไปยัง Google Sheet
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_USERS_APPS_SCRIPT_URL")) {
+                alert("กรุณาติดตั้งและวาง Apps Script Web App URL ก่อนครับ");
+                return;
+            }
+
+            showLoading(true);
+
+            const payload = {
+                action: 'register',
+                title: document.getElementById('reg-title').value,
+                firstname: document.getElementById('reg-firstname').value,
+                lastname: document.getElementById('reg-lastname').value,
+                phone: document.getElementById('reg-phone').value,
+                email: document.getElementById('reg-email').value,
+                position: document.getElementById('reg-position').value,
+                workplace: document.getElementById('reg-workplace').value,
+                username: document.getElementById('reg-username').value.trim(),
+                password: document.getElementById('reg-password').value.trim()
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: new URLSearchParams(payload)
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert("ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบด้วย Username และ Password ของคุณ");
+                    document.getElementById('form-register').reset();
+                    toggleAuthMode('login');
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + result.message);
+                }
+            } catch (error) {
+                console.error("Register error:", error);
+                alert("เกิดข้อผิดพลาดในการลงทะเบียน กรุณาลองใหม่อีกครั้ง");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // 8. การล็อคอินเข้าสู่ระบบ ตรวจสอบ Username/Password กับ Google Sheet
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_USERS_APPS_SCRIPT_URL")) {
+                alert("กรุณาติดตั้งและวาง Apps Script Web App URL ก่อนครับ");
+                return;
+            }
+
+            showLoading(true);
+
+            const payload = {
+                action: 'login',
+                username: document.getElementById('login-username').value.trim(),
+                password: document.getElementById('login-password').value.trim()
+            };
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: new URLSearchParams(payload)
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // บันทึกสถานะการล็อกอินลง localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userName', `${result.user.title}${result.user.firstname} ${result.user.lastname}`);
+                    localStorage.setItem('userRole', result.user.position);
+                    localStorage.setItem('loginTime', new Date().getTime());
+
+                    alert("เข้าสู่ระบบสำเร็จ!");
+                    window.location.href = HOMEPAGE_URL; // เปลี่ยนไปยังหน้า Homepage[cite: 4]
+                } else {
+                    alert("เข้าสู่ระบบไม่สำเร็จ: " + result.message);
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                alert("เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(status) {
+            document.getElementById('loading-spinner').style.display = status ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>

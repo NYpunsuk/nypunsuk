@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage - ระบบบริการสุขภาพสำหรับผู้ต้องขัง</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #f4f7f6;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* Side bar */
+        .sidebar {
+            width: 280px;
+            background-color: #004d33;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            padding: 0 15px 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+        }
+
+        .sidebar-logo img {
+            max-width: 70px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-logo h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .user-profile {
+            padding: 15px 20px;
+            background-color: rgba(255, 255, 255, 0.08);
+            margin: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-profile i {
+            font-size: 1.8rem;
+            color: #80e6b3;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            color: #d1d5db;
+        }
+
+        .user-info h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 10px;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #006644;
+            border-left-color: #80e6b3;
+        }
+
+        .btn-logout {
+            margin: 15px;
+            padding: 10px;
+            background-color: #dc2626;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #b91c1c;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background-color: #f8fafc;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Home Cards */
+        .home-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .home-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+
+        .home-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .home-card-img {
+            width: 200px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #e2e8f0;
+        }
+
+        .home-card h3 {
+            font-size: 1.1rem;
+            color: #004d33;
+        }
+
+        .card-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .drive-embed-box {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            margin-top: 15px;
+            background: #f1f5f9;
+        }
+
+        /* Sub Tabs */
+        .sub-tab-container {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .sub-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+        }
+
+        .sub-tab.active {
+            color: #006644;
+            border-bottom-color: #006644;
+        }
+
+        .sub-content {
+            display: none;
+        }
+
+        .sub-content.active {
+            display: block;
+        }
+
+        /* Forms Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #006644;
+        }
+
+        .btn-submit {
+            background-color: #006644;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-submit:hover {
+            background-color: #003322;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .dynamic-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 30px;
+            line-height: 1.5;
+        }
+
+        .credits-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .fb-logo {
+            width: 0px;
+            height: 0px;
+        }
+
+        .credits-link {
+            color: #1877f2;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .credits-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading Overlay */
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            color: #006644;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= 1. SIDEBAR ================= -->
+    <div class="sidebar">
+        <div class="sidebar-logo" onclick="switchSection('home')">
+            <img src="img/ปันสุข.png" alt="โลโก้สำนักงาน" width="200px" height="200px">
+            <h3>ระบบบริการสุขภาพผู้ต้องขัง</h3>
+        </div>
+
+        <div class="user-profile">
+            <i class="fa-solid fa-circle-user"></i>
+            <div class="user-info">
+                <p>ผู้ใช้งานปัจจุบัน</p>
+                <h4 id="display-user-name">Welcome-User</h4>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" id="nav-home" onclick="switchSection('home')">
+                <i class="fa-solid fa-house"></i> หน้าหลัก (Homepage)
+            </li>
+            <li class="nav-item" id="nav-plans" onclick="switchSection('plans')">
+                <i class="fa-solid fa-file-pdf"></i> แผนปฏิบัติงานต่างๆ
+            </li>
+            <li class="nav-item" id="nav-datareport" onclick="switchSection('datareport')">
+                <i class="fa-solid fa-pen-to-square"></i> ระบบบันทึกข้อมูล Data report
+            </li>
+            <li class="nav-item" id="nav-dashboard" onclick="switchSection('dashboard')">
+                <i class="fa-solid fa-chart-column"></i> ระบบรายงานข้อมูล Dashboard
+            </li>
+        </ul>
+        <footer>
+        <p>&copy; 2026 กลุ่มงานพัฒนาคุณภาพและรูปแบบบริการ สำนักงานสาธารณสุขจังหวัดนครนายก<br>
+        เลขที่ 90 หมู่ 7 ตำบลเขาพระ อำเภอเมืองนครนายก จังหวัดนครนายก 26000 <br>
+        เบอร์โทรศัพท์ 037-386390 ต่อ 311 | E-mail : Works.wor27@gmail.com</p>
+
+        <div class="credits-container">
+            <a href="https://www.facebook.com/riskcom.noph" target="_blank">
+                <img src="img/FB.png" class="fb-logo" alt="FB" onerror="this.style.display='none'">
+            </a>
+            <a href="https://www.facebook.com/riskcom.noph" target="_blank" class="credits-link">
+                <i class="fa-brands fa-facebook"></i> สื่อสารความเสี่ยงโรคและภัยสุขภาพ สสจ.นครนายก
+            </a>
+        </div>
+    </footer>
+
+        <button class="btn-logout" onclick="logout('คุณทำการออกจากระบบเรียบร้อยแล้ว')"><i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ</button>
+    </div>
+
+    <!-- ================= 2. MAIN CONTENT ================= -->
+    <div class="main-content">
+
+        <!-- 2.1 หน้าหลัก (HOMEPAGE) -->
+        <div id="section-home" class="content-section active">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img src="img/ปันสุข.png" alt="โลโก้สำนักงาน" width="300px" height="300px">
+                <h2>ระบบบริหารจัดการและติดตามบริการสุขภาพสำหรับผู้ต้องขัง จังหวัดนครนายก</h2>
+            </div>
+
+            <div class="home-cards-container">
+                <div class="home-card">
+                    <img src="img/เรือนจำ.png" alt="เรือนจำจังหวัดนครนายก" width="250px" height="250px">
+                    <h3>เรือนจำจังหวัดนครนายก</h3>
+                </div>
+                <div class="home-card">
+                    <img src="img/hospital.png" alt="โรงพยาบาลนครนายก" width="300px" height="250px">
+                    <h3>โรงพยาบาลนครนายก</h3>
+                </div>
+                <div class="home-card">
+                    <img src="img/สสจ.png" alt="สำนักงานสาธารณสุขจังหวัดนครนายก" width="250px" height="250px">
+                    <h3>สำนักงานสาธารณสุขจังหวัดนครนายก</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.1 แผนปฏิบัติงานต่างๆ (ดูไฟล์ PDF ได้อย่างเดียว) -->
+        <div id="section-plans" class="content-section">
+            <h2>แผนปฏิบัติงานต่างๆ</h2>
+            <br>
+
+            <div class="card-box">
+                <h3>1. คำสั่งแต่งตั้งกรรมการพัฒนาระบบบริการสุขภาพสำหรับผู้ต้องขังจังหวัดนครนายก</h3>
+                <iframe class="drive-embed-box" src="https://drive.google.com/embeddedfolderview?id=1Cm86rsQ4oWI8Lx-gN-kwBvU94ytOqOwt#list"></iframe>
+            </div>
+
+            <div class="card-box">
+                <h3>2. แผนการคัดกรองวัณโรคปอดสำหรับผู้ต้องขังในเรือนจำด้วยรถเอ็กซเรย์ดิจิทัลพระราชทาน</h3>
+                <iframe class="drive-embed-box" src="https://drive.google.com/embeddedfolderview?id=1LFzHULJbGOdC6JH1JVbQFuNzK4lUzcA3#list"></iframe>
+            </div>
+
+            <div class="card-box">
+                <h3>3. แผนการปฏิบัติงาน โครงการอื่นๆ</h3>
+                <iframe class="drive-embed-box" src="https://drive.google.com/embeddedfolderview?id=1gatuazmSopI8DbW3fAT4FE488hegwQN-#list"></iframe>
+            </div>
+        </div>
+
+        <!-- 3.2 ระบบบันทึกข้อมูล DATA REPORT -->
+        <div id="section-datareport" class="content-section">
+            <h2>ระบบบันทึกข้อมูล Data report</h2>
+            <br>
+
+            <div class="sub-tab-container">
+                <div class="sub-tab active" onclick="switchSubTab('dr-prison', event)">เรือนจำจังหวัดนครนายก</div>
+                <div class="sub-tab" onclick="switchSubTab('dr-hospital', event)">โรงพยาบาลนครนายก</div>
+                <div class="sub-tab" onclick="switchSubTab('dr-sso', event)">สำนักงานสาธารณสุขจังหวัดนครนายก</div>
+            </div>
+
+            <!-- 3.2.1 เรือนจำจังหวัดนครนายก -->
+            <div id="dr-prison" class="sub-content active">
+                <div class="card-box">
+                    <h3>เรือนจำจังหวัดนครนายก</h3>
+                    <br>
+                    
+                    <h4>รายสัปดาห์</h4>
+                    <form id="form-prison-weekly">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>1. แพทย์ตรวจ/รักษา</label>
+                                <input type="text" id="pw-doctor" class="form-control" placeholder="ระบุข้อมูล">
+                            </div>
+                            <div class="form-group">
+                                <label>2. พยาบาลตรวจ/รักษา</label>
+                                <input type="text" id="pw-nurse" class="form-control" placeholder="ระบุข้อมูล">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>3. อุบัติเหตุ</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" id="pw-accident-treat" value="รักษา"> รักษา</label>
+                                <label><input type="checkbox" id="pw-accident-refer" value="ส่งออก"> ส่งออก</label>
+                            </div>
+                            <input type="number" id="pw-accident-count" class="form-control" placeholder="กรอกจำนวน (คน)" style="margin-top: 8px;">
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>4. จำนวน admit สถานพยาบาล</label>
+                                <input type="number" id="pw-admit-hosp" class="form-control" placeholder="จำนวน">
+                            </div>
+                            <div class="form-group">
+                                <label>5. Telemed/psy</label>
+                                <input type="text" id="pw-telemed" class="form-control" placeholder="ระบุข้อมูล">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>6. วัคซีน (จำนวนครั้ง):</label>
+                            <select id="pw-vac-times" class="form-control" onchange="generateVaccineInputs(this.value)">
+                                <option value="0">0 ครั้ง</option>
+                                <option value="1">1 ครั้ง</option>
+                                <option value="2">2 ครั้ง</option>
+                                <option value="3">3 ครั้ง</option>
+                            </select>
+                        </div>
+                        <div id="vac-container"></div>
+
+                        <div class="form-group">
+                            <label>7. ผู้ต้องขังตั้งครรภ์/เด็กติดมารดา</label>
+                            <input type="text" id="pw-pregnant" class="form-control" placeholder="ระบุข้อมูล">
+                        </div>
+
+                        <div class="form-group">
+                            <label>8. การออกไปรับยาที่โรงพยาบาล (จำนวนครั้ง):</label>
+                            <select id="pw-med-times" class="form-control" onchange="generateMedInputs(this.value)">
+                                <option value="0">0 ครั้ง</option>
+                                <option value="1">1 ครั้ง</option>
+                                <option value="2">2 ครั้ง</option>
+                                <option value="3">3 ครั้ง</option>
+                                <option value="4">4 ครั้ง</option>
+                            </select>
+                        </div>
+                        <div id="med-container"></div>
+
+                        <div class="form-group">
+                            <label>9. จำนวน admit ห้องปันสุข (คน)</label>
+                            <input type="number" id="pw-admit-punsook" class="form-control" placeholder="จำนวน (คน)">
+                        </div>
+
+                        <!-- ใส่ URL ของ Apps Script สำหรับ 'เรือนจำ รายสัปดาห์' -->
+                        <button type="button" class="btn-submit" onclick="submitDataReport('https://script.google.com/macros/s/AKfycbycSsfT6E1Lfz4C9Q-cuSwDEOpNgX0d9HcRilVLPBPobY3ZYpcdoYQg5bGPleKi-lFONA/exec', 'form-prison-weekly')">บันทึกข้อมูลรายสัปดาห์</button>
+                    </form>
+
+                    <hr style="margin: 30px 0;">
+
+                    <h4>รายเดือน</h4>
+                    <form id="form-prison-monthly">
+                        <div class="form-grid">
+                            <div class="form-group"><label>1. ผู้ต้องขังทั้งหมด</label><input type="number" id="pm-total" class="form-control"></div>
+                            <div class="form-group"><label>2. ผู้ต้องขังชาย</label><input type="number" id="pm-male" class="form-control"></div>
+                            <div class="form-group"><label>3. ผู้ต้องขังหญิง</label><input type="number" id="pm-female" class="form-control"></div>
+                            <div class="form-group"><label>4. ผู้ต้องขังแรกรับ</label><input type="number" id="pm-new" class="form-control"></div>
+                            <div class="form-group"><label>5. ผู้ต้องขังปล่อยตัว</label><input type="number" id="pm-release" class="form-control"></div>
+                            <div class="form-group"><label>6. จำนวนครั้งการตรวจคุณภาพน้ำ</label><input type="number" id="pm-water" class="form-control"></div>
+                            <div class="form-group"><label>7. จำนวนเครื่องกู้ชีพ AED</label><input type="number" id="pm-water" class="form-control"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>7. การฝากส่งขยะติดเชื้อ</label>
+                            <div class="form-grid">
+                                <input type="text" id="pm-waste-place" class="form-control" placeholder="สถานที่">
+                                <input type="number" id="pm-waste-times" class="form-control" placeholder="จำนวนครั้ง">
+                                <input type="number" step="0.1" id="pm-waste-kg" class="form-control" placeholder="กิโลกรัม">
+                            </div>
+                        </div>
+
+                        <!-- ใส่ URL ของ Apps Script สำหรับ 'เรือนจำ รายเดือน' -->
+                        <button type="button" class="btn-submit" onclick="submitDataReport('https://script.google.com/macros/s/AKfycbyiByr04LZkqToauLXjiqofvmJtRdgHnDzXFlR_3IOJbiB3kFAKSzN4sls6tPM2yBJ8/exec', 'form-prison-monthly')">บันทึกข้อมูลรายเดือน</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 3.2.2 โรงพยาบาลนครนายก -->
+            <div id="dr-hospital" class="sub-content">
+                <div class="card-box">
+                    <h3>สำหรับโรงพยาบาลนครนายก</h3>
+                    <br>
+
+                    <h4>คัดกรองโรค</h4>
+                    <form id="form-hosp-screen">
+                        <div class="form-group">
+                            <label>1. คัดกรอง TB แรกรับ</label>
+                            <div class="form-grid">
+                                <input type="number" id="hs-tb1-count" class="form-control" placeholder="จำนวน">
+                                <input type="number" id="hs-tb1-abnormal" class="form-control" placeholder="ผิดปกติ">
+                                <input type="number" id="hs-tb1-diag" class="form-control" placeholder="วินิจฉัย">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>2. คัดกรอง TB รายเก่า</label>
+                            <div class="form-grid">
+                                <input type="number" id="hs-tb2-count" class="form-control" placeholder="จำนวน">
+                                <input type="number" id="hs-tb2-abnormal" class="form-control" placeholder="ผิดปกติ">
+                                <input type="number" id="hs-tb2-diag" class="form-control" placeholder="วินิจฉัย">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>3. คัดกรอง HIV</label>
+                            <div class="form-grid">
+                                <input type="number" id="hs-hiv-count" class="form-control" placeholder="จำนวน">
+                                <input type="number" id="hs-hiv-abnormal" class="form-control" placeholder="ผิดปกติ">
+                                <input type="number" id="hs-hiv-diag" class="form-control" placeholder="วินิจฉัย">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>4. คัดกรองซิฟิลิส</label>
+                            <div class="form-grid">
+                                <input type="number" id="hs-syp-count" class="form-control" placeholder="จำนวน">
+                                <input type="number" id="hs-syp-abnormal" class="form-control" placeholder="ผิดปกติ">
+                                <input type="number" id="hs-syp-diag" class="form-control" placeholder="วินิจฉัย">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>5. คัดกรองไวรัสตับอักเสบซี</label>
+                            <div class="form-grid">
+                                <input type="number" id="hs-hcv-count" class="form-control" placeholder="จำนวน">
+                                <input type="number" id="hs-hcv-abnormal" class="form-control" placeholder="ผิดปกติ">
+                                <input type="number" id="hs-hcv-diag" class="form-control" placeholder="วินิจฉัย">
+                            </div>
+                        </div>
+                        <!-- ใส่ URL ของ Apps Script สำหรับ 'รพ. นครนายก คัดกรองโรค' -->
+                        <button type="button" class="btn-submit" onclick="submitDataReport('https://script.google.com/macros/s/AKfycbytYANNmFueyH3bKykBLmov8_7Eh5laq7iTjA87kef9k0eAIDyyfeBQ2UND1UPomONG/exec', 'form-hosp-screen')">บันทึกข้อมูลคัดกรอง</button>
+                    </form>
+
+                    <hr style="margin: 30px 0;">
+
+                    <h4>บริการทันตกรรม</h4>
+                    <form id="form-hosp-dental">
+                        <div class="form-grid">
+                            <div class="form-group"><label>1. วันที่ออกให้บริการ</label><input type="date" id="hd-date" class="form-control"></div>
+                            <div class="form-group"><label>2. อุดฟัน</label><input type="number" id="hd-fill" class="form-control"></div>
+                            <div class="form-group"><label>3. ถอนฟัน</label><input type="number" id="hd-ext" class="form-control"></div>
+                            <div class="form-group"><label>4. เคลือบฟลูออไรด์</label><input type="number" id="hd-fluo" class="form-control"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>5. อื่นๆ</label>
+                            <div class="form-grid">
+                                <input type="text" id="hd-other-note" class="form-control" placeholder="ระบุ">
+                                <input type="number" id="hd-other-count" class="form-control" placeholder="จำนวน">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>6. จำนวนเจ้าหน้าที่ให้บริการ</label>
+                            <input type="number" id="hd-staff" class="form-control">
+                        </div>
+
+                        <!-- ใส่ URL ของ Apps Script สำหรับ 'รพ. นครนายก ทันตกรรม' -->
+                        <button type="button" class="btn-submit" onclick="submitDataReport('https://script.google.com/macros/s/AKfycbwAZ3njcKLpJUGolsucWPAYGycfaINdiE52Gonq1dBhR63tINoSS8O1z2cerdLpFFDl/exec', 'form-hosp-dental')">บันทึกข้อมูลทันตกรรม</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 3.2.3 สำนักงานสาธารณสุขจังหวัดนครนายก -->
+            <div id="dr-sso" class="sub-content">
+                <div class="card-box">
+                    <h3>สำหรับสำนักงานสาธารณสุขจังหวัดนครนายก</h3>
+                    <br>
+
+                    <h4>ระบบติดตามผู้ป่วยวัณโรคหลังพ้นโทษ</h4>
+                    <form id="form-sso-tb">
+                        <div class="form-group">
+                            <label>จำนวนผู้ป่วย (1-10 คน):</label>
+                            <select class="form-control" id="tb-count" onchange="generateDynamicInputs('tb-container', this.value, 'tb')">
+                                <option value="0">-- เลือกจำนวน --</option>
+                                <script>
+                                    for(let i=1; i<=10; i++) document.write(`<option value="${i}">${i} คน</option>`);
+                                </script>
+                            </select>
+                        </div>
+                        <div id="tb-container"></div>
+                        <!-- ใส่ URL ของ Apps Script สำหรับ 'สสจ. ติดตามวัณโรค' -->
+                        <button type="button" class="btn-submit" onclick="submitDataReport('https://script.google.com/macros/s/AKfycbxBRPh2EKwEyUR7o_8ExT59kUGYEDp1_YFCxRBH4rNgbVA18la7dfsCyeF5rT9UN3VZ/exec', 'form-sso-tb')">บันทึกข้อมูลวัณโรค</button>
+                    </form>
+
+                    <hr style="margin: 30px 0;">
+
+                    <h4>ระบบติดตามผู้ป่วยจิตเวชและยาเสพติดหลังพ้นโทษ</h4>
+                    <form id="form-sso-psych">
+                        <div class="form-group">
+                            <label>จำนวนผู้ป่วย (1-10 คน):</label>
+                            <select class="form-control" id="psych-count" onchange="generateDynamicInputs('psych-container', this.value, 'psych')">
+                                <option value="0">-- เลือกจำนวน --</option>
+                                <script>
+                                    for(let i=1; i<=10; i++) document.write(`<option value="${i}">${i} คน</option>`);
+                                </script>
+                            </select>
+                        </div>
+                        <div id="psych-container"></div>
+                        <!-- ใส่ URL ของ Apps Script สำหรับ 'สสจ. ติดตามจิตเวช' -->
+                        <button type="button" class="btn-submit" onclick="submitDataReport('https://script.google.com/macros/s/AKfycbzioiAfSxMVZpEfBoB9e7Wl5YKY-B9NT0tP_PkRUDUpShitOoNC2xOpiEfmAtnnzt8k/exec', 'form-sso-psych')">บันทึกข้อมูลจิตเวช</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3.3 ระบบรายงานข้อมูล DASHBOARD (ดูไฟล์ PDF ได้อย่างเดียว) -->
+        <div id="section-dashboard" class="content-section">
+            <h2>ระบบรายงานข้อมูล Dashboard</h2>
+            <p>รายงานสรุปผลภาพรวมและสถิติข้อมูลสุขภาพผู้ต้องขัง</p>
+            <br>
+            <div class="card-box">
+                <h3>เอกสารรายงานสรุป Dashboard</h3>
+                <iframe class="drive-embed-box" src="https://drive.google.com/embeddedfolderview?id=1JUkVD5fjaX71DL1g-2XW93GwR9_yhTXT#list"></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        const LOGIN_PAGE_URL = "http://127.0.0.1:5500/index.html";
+        const AUTO_LOGOUT_TIME = 60 * 60 * 1000; // 1 ชั่วโมง
+        let idleTimer;
+
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                logout("ต้องได้รับการยืนยันการเข้าสู่ระบบก่อน จึงจะสามารถเข้ามาหน้านี้ได้");
+                return;
+            }
+
+            const userName = localStorage.getItem('userName') || "เจ้าหน้าที่";
+            document.getElementById('display-user-name').innerText = userName;
+
+            resetIdleTimer();
+        };
+
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => {
+                logout("ไม่มีการเคลื่อนไหวเกิน 1 ชั่วโมง ระบบจะทำการออกจากระบบอัตโนมัติ");
+            }, AUTO_LOGOUT_TIME);
+        }
+
+        document.onmousemove = resetIdleTimer;
+        document.onkeypress = resetIdleTimer;
+        document.onclick = resetIdleTimer;
+        document.onscroll = resetIdleTimer;
+
+        function logout(message) {
+            localStorage.clear();
+            if(message) alert(message);
+            window.location.href = LOGIN_PAGE_URL;
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
+        }
+
+        function switchSubTab(tabId, event) {
+            document.querySelectorAll('.sub-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function generateVaccineInputs(count) {
+            const container = document.getElementById('vac-container');
+            container.innerHTML = "";
+            for (let i = 1; i <= count; i++) {
+                const row = document.createElement('div');
+                row.className = 'form-grid';
+                row.innerHTML = `
+                    <div class="form-group">
+                        <label>ครั้งที่ ${i}: วัคซีนอะไร</label>
+                        <input type="text" id="pw-vac-name-${i}" class="form-control" placeholder="ระบุประเภทวัคซีน">
+                    </div>
+                    <div class="form-group">
+                        <label>จำนวนคนที่รับวัคซีน</label>
+                        <input type="number" id="pw-vac-count-${i}" class="form-control" placeholder="จำนวน (คน)">
+                    </div>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function generateMedInputs(count) {
+            const container = document.getElementById('med-container');
+            container.innerHTML = "";
+            for (let i = 1; i <= count; i++) {
+                const row = document.createElement('div');
+                row.className = 'form-group';
+                row.innerHTML = `
+                    <label>ครั้งที่ ${i}: ยาอะไร</label>
+                    <input type="text" id="pw-med-name-${i}" class="form-control" placeholder="ระบุชื่อยา">
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        function generateDynamicInputs(containerId, count, prefix) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            for (let i = 1; i <= count; i++) {
+                const row = document.createElement('div');
+                row.className = 'dynamic-row';
+                row.innerHTML = `
+                    <span style="font-weight: bold; width: 60px;">คนที่ ${i}:</span>
+                    <input type="text" id="${prefix}-tambon-${i}" class="form-control" placeholder="ตำบลอะไร">
+                    <input type="text" id="${prefix}-hosp-${i}" class="form-control" placeholder="หน่วยบริการที่รับผิดชอบ">
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        async function submitDataReport(scriptUrl, formId) {
+            if (!scriptUrl || scriptUrl.includes('YOUR_SCRIPT_URL')) {
+                alert("กรุณาติดตั้ง Apps Script URL ให้ถูกต้องก่อนครับ");
+                return;
+            }
+
+            const formElement = document.getElementById(formId);
+            const inputs = formElement.querySelectorAll('input, select');
+            let formData = {
+                submittedBy: localStorage.getItem('userName') || "Unknown",
+                timestamp: new Date().toLocaleString("th-TH")
+            };
+
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    formData[input.id || input.value] = input.checked ? input.value : "";
+                } else if(input.id) {
+                    formData[input.id] = input.value;
+                }
+            });
+
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors', // รองรับการส่งข้ามโดเมนของ Google Sheet
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                alert("บันทึกข้อมูลลง Google Sheet สำเร็จเรียบร้อย!");
+                formElement.reset();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+            }
+        }
+    </script>
+</body>
+</html>
